@@ -57,7 +57,7 @@ class _HomeState extends State<Home> {
     euroController.text = (real / euro!).toStringAsFixed(2);
     arsController.text = (real / ars!).toStringAsFixed(2);
     yenController.text = (real / yen!).toStringAsFixed(2);
-    yenController.text = (real / lib!).toStringAsFixed(2);
+    libController.text = (real / lib!).toStringAsFixed(2);
   }
 
   void _dolarChanged(String texto) {
