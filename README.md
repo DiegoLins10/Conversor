@@ -14,4 +14,4 @@ Um aplicativo Mobile usando flutter que busca os valores das moedas via API e re
 - API: https://api.hgbrasil.com/finance
 
 ## Tela principal
-![](https://github.com/DiegoLins10/Conversor/blob/master/conversor%20de%20moeda.png)
+![](https://github.com/DiegoLins10/Conversor/blob/master/conversor%20de%20amostra.png)
