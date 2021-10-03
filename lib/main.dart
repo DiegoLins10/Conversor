@@ -8,6 +8,7 @@ const request = "https://api.hgbrasil.com/finance";
 void main() async {
   runApp(
     MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Home(),
       theme: ThemeData(
         hintColor: Colors.amber,
@@ -29,32 +30,84 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
+/*
+  CRIANDO OS CONTROLLERS PARA RECEBER O VALORES
+*/
 class _HomeState extends State<Home> {
   final realController = TextEditingController();
   final dolarController = TextEditingController();
   final euroController = TextEditingController();
+  final arsController = TextEditingController();
+  final yenController = TextEditingController();
+  final libController = TextEditingController();
 
   double? dolar;
   double? euro;
+  double? ars;
+  double? yen;
+  double? lib;
 
+/*
+  IMPLEMENTANDO AS CONVERSÕES PARA REAL
+  PARA APARECER NO APLICATIVO
+*/
   void _realChanged(String texto) {
     double real = double.parse(texto);
     dolarController.text = (real / dolar!).toStringAsFixed(2);
     euroController.text = (real / euro!).toStringAsFixed(2);
+    arsController.text = (real / ars!).toStringAsFixed(2);
+    yenController.text = (real / yen!).toStringAsFixed(2);
+    yenController.text = (real / lib!).toStringAsFixed(2);
   }
 
   void _dolarChanged(String texto) {
     double _dolar = double.parse(texto);
     realController.text = (_dolar * dolar!).toStringAsFixed(2);
     euroController.text = (_dolar * dolar! / euro!).toStringAsFixed(2);
+    arsController.text = (_dolar * dolar! / ars!).toStringAsFixed(2);
+    yenController.text = (_dolar * dolar! / yen!).toStringAsFixed(2);
+    libController.text = (_dolar * dolar! / lib!).toStringAsFixed(2);
   }
 
   void _euroChanged(String texto) {
     double _euro = double.parse(texto);
     realController.text = (_euro * euro!).toStringAsFixed(2);
     dolarController.text = (_euro * euro! / dolar!).toStringAsFixed(2);
+    arsController.text = (_euro * euro! / ars!).toStringAsFixed(2);
+    yenController.text = (_euro * euro! / yen!).toStringAsFixed(2);
+    libController.text = (_euro * euro! / lib!).toStringAsFixed(2);
   }
 
+  void _arsChanged(String texto) {
+    double _ars = double.parse(texto);
+    realController.text = (_ars * ars!).toStringAsFixed(2);
+    dolarController.text = (_ars * ars! / dolar!).toStringAsFixed(2);
+    euroController.text = (_ars * ars! / euro!).toStringAsFixed(2);
+    yenController.text = (_ars * ars! / yen!).toStringAsFixed(2);
+    libController.text = (_ars * ars! / lib!).toStringAsFixed(2);
+  }
+
+  void _yenChanged(String texto) {
+    double _yen = double.parse(texto);
+    realController.text = (_yen * yen!).toStringAsFixed(2);
+    dolarController.text = (_yen * yen! / dolar!).toStringAsFixed(2);
+    euroController.text = (_yen * yen! / euro!).toStringAsFixed(2);
+    arsController.text = (_yen * yen! / ars!).toStringAsFixed(2);
+    libController.text = (_yen * yen! / lib!).toStringAsFixed(2);
+  }
+
+  void _libChanged(String texto) {
+    double _lib = double.parse(texto);
+    realController.text = (_lib * lib!).toStringAsFixed(2);
+    dolarController.text = (_lib * lib! / dolar!).toStringAsFixed(2);
+    euroController.text = (_lib * lib! / euro!).toStringAsFixed(2);
+    arsController.text = (_lib * lib! / ars!).toStringAsFixed(2);
+    yenController.text = (_lib * lib! / yen!).toStringAsFixed(2);
+  }
+
+  /*
+    IMPLEMENTANDO OS WIDGETS QUE SERÁ O FRONT END DO APP
+ */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +148,9 @@ class _HomeState extends State<Home> {
               } else {
                 dolar = snapshot.data!["results"]["currencies"]["USD"]["buy"];
                 euro = snapshot.data!["results"]["currencies"]["EUR"]["buy"];
+                ars = snapshot.data!["results"]["currencies"]["ARS"]["buy"];
+                yen = snapshot.data!["results"]["currencies"]["JPY"]["buy"];
+                lib = snapshot.data!["results"]["currencies"]["GBP"]["buy"];
                 return SingleChildScrollView(
                   padding: EdgeInsets.all(10),
                   child: Column(
@@ -105,14 +161,23 @@ class _HomeState extends State<Home> {
                         size: 150,
                         color: Colors.amber,
                       ),
-                      construirTextField(
-                          "Reais", "R\$", realController, _realChanged),
+                      construirTextField("Reais", "R\$", realController,
+                          _realChanged), // aqui é configurado o que aparece na tela
                       Divider(),
                       construirTextField(
                           "Dolares", "US\$", dolarController, _dolarChanged),
                       Divider(),
                       construirTextField(
                           "Euros", "€", euroController, _euroChanged),
+                      Divider(),
+                      construirTextField(
+                          "Peso ARG", "\$", arsController, _arsChanged),
+                      Divider(),
+                      construirTextField(
+                          "Yen JP", "\¥", yenController, _yenChanged),
+                      Divider(),
+                      construirTextField(
+                          "LIBRA UK", "\£", libController, _libChanged),
                     ],
                   ),
                 );
@@ -143,6 +208,9 @@ Widget construirTextField(
   );
 }
 
+/*
+  pegando os dados da api
+ */
 Future<Map> pegarDados() async {
   http.Response response = await http.get(Uri.parse(request));
   return json.decode(response.body);
